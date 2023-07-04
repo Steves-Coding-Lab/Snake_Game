@@ -15,7 +15,9 @@ red = pygame.Color(255, 0, 0)
 green = pygame.Color(0, 255, 0)
 
 # Set the initial position and size of the snake
-snake_pos = [[100, 50], [90, 50], [80, 50]]
+snake_pos = [[100, 50], 
+             [90, 50], 
+             [80, 50]]
 snake_size = 10
 
 # Set the initial direction of the snake
@@ -87,8 +89,8 @@ while not game_over_flag:
     if snake_pos[0] == food_pos:
         score += 1
         food_spawned = False
-    else:
-        snake_pos.pop()
+    #else:
+    #    snake_pos.pop()
 
     if not food_spawned:
         food_pos = [random.randrange(1, screen_width // 10) * 10,
