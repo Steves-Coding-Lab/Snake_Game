@@ -89,16 +89,15 @@ while True:
 
     # Update snake's tail position
     if len(snake_pos) > 1:
+        #If snake hits own body --> Game Over
+        if snake_pos[0] in snake_pos[1:]:
+            game_over()
         snake_pos.pop()
         snake_pos.insert(1, prev_head)
 
     #If Snake collides with walls --> Game over
     if snake_pos[0][0] < 0 or snake_pos[0][0] >= screen_width or \
             snake_pos[0][1] < 0 or snake_pos[0][1] >= screen_height:
-        game_over()
-
-    #If snake hits own body --> Game Over
-    if snake_pos[0] in snake_pos[1:]:
         game_over()
 
     if snake_pos[0] == food_pos:
