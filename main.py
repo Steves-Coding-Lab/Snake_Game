@@ -8,7 +8,7 @@ pygame.init()
 # Set the screen dimensions
 screen_width = 640
 screen_height = 480
-grid_size = 10
+grid_size = 20
 
 # Set the colors
 black = pygame.Color(0, 0, 0)
@@ -98,7 +98,7 @@ while game_in_play:
         game_over()
 
     #If snake hits own body --> Game Over
-    if snake_pos[0] in snake_pos[1:]:
+    if snake_pos[0] in list(snake_pos)[1:]:
         game_over()
 
     if snake_pos[0] == food_pos:
