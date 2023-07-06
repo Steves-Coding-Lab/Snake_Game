@@ -1,5 +1,6 @@
 import pygame
 import random
+from collections import deque
 
 # Initialize Pygame
 pygame.init()
@@ -37,7 +38,7 @@ def game_over():
 
 
 # Set the initial position of the snake
-snake_pos = [[screen_width // 2, screen_height // 2]] 
+snake_pos = deque([[screen_width // 2, screen_height // 2]])
 
 #Food Position and Snake position cannot be the same
 while True:
@@ -62,12 +63,12 @@ pygame.display.set_caption("Snake Game")
 
 # Start the game loop
 score = 0
-game_over_flag = False
+game_in_play = True
 
-while not game_over_flag:
+while game_in_play:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            game_over_flag = True
+            game_in_play = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP and direction != "DOWN":
                 direction = "UP"
@@ -78,6 +79,10 @@ while not game_over_flag:
             elif event.key == pygame.K_RIGHT and direction != "LEFT":
                 direction = "RIGHT"
 
+    #Shift snake body elements along by one
+    snake_pos.rotate(1)
+    
+    #Now update the snake's head pos
     if direction == "UP":
         snake_pos[0][1] -= grid_size
     elif direction == "DOWN":
@@ -87,18 +92,20 @@ while not game_over_flag:
     elif direction == "RIGHT":
         snake_pos[0][0] += grid_size
 
+    #If Snake collides with walls --> Game over
     if snake_pos[0][0] < 0 or snake_pos[0][0] >= screen_width or \
             snake_pos[0][1] < 0 or snake_pos[0][1] >= screen_height:
         game_over()
 
+    #If snake hits own body --> Game Over
     if snake_pos[0] in snake_pos[1:]:
         game_over()
 
     if snake_pos[0] == food_pos:
         score += 1
         food_spawned = False
-    #else:
-    #    snake_pos.pop()
+        #Need to append new tail as snake grows
+        
 
     if not food_spawned:
         food_pos = random_pos()
