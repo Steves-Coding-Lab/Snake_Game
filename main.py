@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 import random
 from collections import deque
 
@@ -34,6 +34,7 @@ def game_over():
     pygame.display.flip()
     pygame.time.wait(2000)
     pygame.quit()
+    sys.exit()
 
 
 
@@ -69,6 +70,8 @@ while game_in_play:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_in_play = False
+            pygame.quit()
+            sys.exit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP and direction != "DOWN":
                 direction = "UP"
@@ -78,7 +81,7 @@ while game_in_play:
                 direction = "LEFT"
             elif event.key == pygame.K_RIGHT and direction != "LEFT":
                 direction = "RIGHT"
-
+    
     #Shift snake body elements along by one
     snake_pos.rotate(1)
     
@@ -123,7 +126,3 @@ while game_in_play:
     pygame.display.flip()
 
     clock.tick(5)
-
-# Quit the game
-pygame.quit()
-
