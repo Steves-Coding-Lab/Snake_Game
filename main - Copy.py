@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, os, math
 import random
 import copy
 
@@ -6,15 +6,30 @@ import copy
 pygame.init()
 
 # Set the screen dimensions
-screen_width = 640
-screen_height = 480
-grid_size = 20
+screen_width = 880
+screen_height = 640
+grid_size = 40
 
 # Set the colors
-black = pygame.Color(0, 0, 0)
 white = pygame.Color(255, 255, 255)
 red = pygame.Color(255, 0, 0)
 green = pygame.Color(0, 255, 0)
+grass = pygame.Color(77, 87, 43)
+
+current_dir = os.path.dirname(__file__)
+snake_image_path = os.path.join(current_dir, "img", "snake-head.png")
+body_image_path = os.path.join(current_dir, "img", "snake-body.png")
+
+# Load your PNG image
+snake_image = pygame.image.load(snake_image_path)
+body_image = pygame.image.load(body_image_path)
+# Resize the image
+snake_image = pygame.transform.scale(snake_image, (45,45))
+snake_image = pygame.transform.rotate(snake_image, -90) 
+# Set the initial direction of the snake
+direction = "RIGHT"
+head_angle = 90 #facing right
+body_image = pygame.transform.scale(body_image, (45,45))
 
 # Set the initial position of the food or Snake
 def random_pos():
@@ -42,8 +57,9 @@ def spawn_food():
 
 # Set the initial position of the snake
 snake_pos = [[screen_width // 2, screen_height // 2]]
-# Set the initial direction of the snake
-direction = "RIGHT"
+
+
+
 food_pos = spawn_food()
 food_spawned = True
 
@@ -68,12 +84,32 @@ while True:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP and direction != "DOWN":
                 direction = "UP"
+                if head_angle == 90:
+                    snake_image = pygame.transform.rotate(snake_image, 90)
+                else:
+                    snake_image = pygame.transform.rotate(snake_image, -90)
+                head_angle = 0
             elif event.key == pygame.K_DOWN and direction != "UP":
                 direction = "DOWN"
+                if head_angle == 90:
+                    snake_image = pygame.transform.rotate(snake_image, -90)
+                else:
+                    snake_image = pygame.transform.rotate(snake_image, 90)
+                head_angle = 180
             elif event.key == pygame.K_LEFT and direction != "RIGHT":
                 direction = "LEFT"
+                if head_angle == 0:
+                    snake_image = pygame.transform.rotate(snake_image, 90)
+                else:
+                    snake_image = pygame.transform.rotate(snake_image, -90)
+                head_angle = 270
             elif event.key == pygame.K_RIGHT and direction != "LEFT":
                 direction = "RIGHT"
+                if head_angle == 0:
+                    snake_image = pygame.transform.rotate(snake_image, -90)
+                else:
+                    snake_image = pygame.transform.rotate(snake_image, 90)
+                head_angle = 90
         
     prev_head = copy.copy(snake_pos[0]) #must make a copy since variables are references to objects
    
@@ -110,15 +146,17 @@ while True:
         food_pos = spawn_food()
         food_spawned = True
 
-    screen.fill(black)
+    screen.fill(grass)
 
-    for pos in snake_pos:
-        pygame.draw.rect(screen, green, pygame.Rect(pos[0], pos[1], grid_size, grid_size))
-
+    
+    screen.blit(snake_image, snake_pos[0])
+    for pos in snake_pos[1:]:
+        screen.blit(body_image, pos)
+    
     pygame.draw.rect(screen, red, pygame.Rect(food_pos[0], food_pos[1], grid_size, grid_size))
 
     display_score(score)
 
     pygame.display.flip()
 
-    clock.tick(8)
+    clock.tick(6)
